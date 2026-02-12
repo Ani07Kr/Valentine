@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Will You Be My Valentine?</title>
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
   <style>
     body {
       margin: 0;
@@ -50,17 +54,8 @@
       position: absolute;
     }
 
-    #yesBtn {
-      background-color: #4caf50;
-      color: white;
-      left: 20px;
-    }
-
-    #noBtn {
-      background-color: #f44336;
-      color: white;
-      right: 20px;
-    }
+    #yesBtn { background-color: #4caf50; color: white; left: 20px; }
+    #noBtn { background-color: #f44336; color: white; right: 20px; }
 
     .message {
       font-size: 20px;
@@ -70,14 +65,16 @@
       min-height: 24px;
     }
 
-    /* Floating hearts */
-    .heart {
+    .heart, .petal {
       position: fixed;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .heart {
       bottom: -20px;
       font-size: 20px;
       animation: floatUp 6s linear infinite;
-      pointer-events: none;
-      z-index: 1;
     }
 
     @keyframes floatUp {
@@ -85,14 +82,10 @@
       100% { transform: translateY(-110vh) scale(1.5); opacity: 0; }
     }
 
-    /* Rose petals */
     .petal {
-      position: fixed;
       top: -10px;
       font-size: 18px;
       animation: fallDown linear infinite;
-      pointer-events: none;
-      z-index: 1;
     }
 
     @keyframes fallDown {
@@ -127,6 +120,9 @@
   <canvas id="fireworksCanvas"></canvas>
 
   <script>
+    /* Initialize EmailJS (YOU MUST REPLACE WITH YOUR PUBLIC KEY) */
+    emailjs.init(tAwZb1nH77Su8dsDN");
+
     const yesBtn = document.getElementById('yesBtn');
     const noBtn = document.getElementById('noBtn');
     const message = document.getElementById('message');
@@ -136,24 +132,17 @@
       const card = document.querySelector('.card');
       const maxX = card.clientWidth - noBtn.offsetWidth - 20;
       const maxY = card.clientHeight - noBtn.offsetHeight - 20;
-
-      const randomX = Math.random() * maxX;
-      const randomY = Math.random() * maxY;
-
-      noBtn.style.left = randomX + 'px';
-      noBtn.style.top = randomY + 'px';
+      noBtn.style.left = Math.random() * maxX + 'px';
+      noBtn.style.top = Math.random() * maxY + 'px';
     }
 
     noBtn.addEventListener('mouseover', moveNoButton);
-    noBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      moveNoButton();
-    });
+    noBtn.addEventListener('click', (e) => { e.preventDefault(); moveNoButton(); });
 
     /* Floating hearts */
     function createHeart() {
       const heart = document.createElement('div');
-      heart.classList.add('heart');
+      heart.className = 'heart';
       heart.innerHTML = '💖';
       heart.style.left = Math.random() * 100 + 'vw';
       heart.style.animationDuration = 4 + Math.random() * 3 + 's';
@@ -165,7 +154,7 @@
     /* Rose petals */
     function createPetal() {
       const petal = document.createElement('div');
-      petal.classList.add('petal');
+      petal.className = 'petal';
       petal.innerHTML = '🌹';
       petal.style.left = Math.random() * 100 + 'vw';
       petal.style.animationDuration = 5 + Math.random() * 5 + 's';
@@ -194,8 +183,6 @@
           alpha: 1
         });
       }
-
-      
     }
 
     function animateFireworks() {
@@ -218,8 +205,8 @@
     }
     animateFireworks();
 
-    /* Typing message + fireworks on YES */
-    const text = "Yayyy! It's a date! I can't wait to spend Valentine's Day with you 💕";
+    /* Typing message */
+    const text = "She said YES! 💕 See you on our Valentine date ❤️";
     let index = 0;
 
     function typeMessage() {
@@ -230,6 +217,7 @@
       }
     }
 
+    /* YES click */
     yesBtn.addEventListener('click', () => {
       message.style.display = 'block';
       yesBtn.style.display = 'none';
@@ -237,9 +225,17 @@
 
       typeMessage();
 
-      for (let i = 0; i < 5; i++) {
-        setTimeout(createFirework, i * 300);
-      }
+      for (let i = 0; i < 5; i++) setTimeout(createFirework, i * 300);
+
+      /* Send Email Notification */
+      emailjs.send("service_af1d6jz", "template_8897pf7", {
+        to_email: "aniketalsss@gmail.com",
+        message: "She clicked YES on your Valentine website 💖"
+      }).then(() => {
+        console.log("Email sent successfully");
+      }).catch((error) => {
+        console.error("Email failed:", error);
+      });
     });
   </script>
 
