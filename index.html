@@ -120,7 +120,7 @@
   <canvas id="fireworksCanvas"></canvas>
 
   <script>
-    /* Initialize EmailJS (YOU MUST REPLACE WITH YOUR PUBLIC KEY) */
+    /* ✅ Correct EmailJS initialization */
     emailjs.init("tAwZb1nH77Su8dsDN");
 
     const yesBtn = document.getElementById('yesBtn');
@@ -206,7 +206,7 @@
     animateFireworks();
 
     /* Typing message */
-    const text = "She said YES! 💕 See you on our Valentine date ❤️";
+    const text = "Yayyy! It's a date! I can't wait to spend Valentine's Day with you 💕";
     let index = 0;
 
     function typeMessage() {
@@ -230,11 +230,13 @@
       /* Send Email Notification */
       emailjs.send("service_af1d6jz", "template_8897pf7", {
         to_email: "aniketalsss@gmail.com",
-        message: "She clicked YES on your Valentine website 💖"
+        to_name: "Aniket",
+        message: "Arpita clicked YES on your Valentine website 💖",
+        time: new Date().toLocaleString()
       }).then(() => {
-        console.log("Email sent successfully");
+        console.log("✅ Email sent successfully");
       }).catch((error) => {
-        console.error("Email failed:", error);
+        console.error("❌ Email failed:", error);
       });
     });
   </script>
